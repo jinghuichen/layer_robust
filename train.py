@@ -54,7 +54,8 @@ learning_rate = tf.train.piecewise_constant(
     tf.cast(global_step, tf.int32),
     boundaries,
     values)
-total_loss = model.mean_xent + weight_decay * model.weight_decay_loss
+total_loss = model.mean_xent
+# + weight_decay * model.weight_decay_loss
 train_step = tf.train.MomentumOptimizer(learning_rate, momentum).minimize(
     total_loss,
     global_step=global_step)
@@ -94,7 +95,9 @@ with tf.Session() as sess:
 
     # Main training loop
     for epoch in range(max_num_epochs):
-        
+        nat_acc = []
+        adv_acc = []
+        xent = []
         total_batches = math.ceil(raw_cifar.train_data.n/batch_size)
         for b in range(total_batches):
             x_batch, y_batch = cifar.train_data.get_next_batch(batch_size,
@@ -126,12 +129,12 @@ with tf.Session() as sess:
 
             
             
-
-            nat_acc = sess.run(model.accuracy, feed_dict=nat_dict)
-            adv_acc = sess.run(model.accuracy, feed_dict=adv_dict) 
-            progress_bar(b, total_batches, 'nat_acc: %.3f%%  | adv_acc: %.3f%%  '
-                        % (nat_acc * 100, adv_acc * 100))
-      
+            xent.append(sess.run(model.xent, feed_dict=nat_dict))
+            nat_acc.append(sess.run(model.accuracy, feed_dict=nat_dict))
+            adv_acc.append(sess.run(model.accuracy, feed_dict=adv_dict))
+            progress_bar(b, total_batches, 'nat_acc: %.3f%%  | adv_acc: %.3f%%  | loss: %.3f  '
+                        % (np.mean(nat_acc) * 100, np.mean(adv_acc) * 100, np.mean(xent)))
+ 
     
         #     # Output to stdout
         #     if ii % num_output_steps == 0:
@@ -184,13 +187,11 @@ with tf.Session() as sess:
         adv_accs.append(adv_full_acc)
         print('Finish Epoch {} : Total test nat acc {:.4}%  adv accuracy {:.4}% ({})'.format(epoch,nat_full_acc * 100, adv_full_acc * 100, datetime.now()))
         print ()
-        with open('paat_training_natacc' +  '.txt', 'w') as f: 
+        with open('training_natacc' +  '.txt', 'w') as f: 
             json.dump(nat_accs, f)
-        with open('paat_training_advacc' +  '.txt', 'w') as f: 
+        with open('training_advacc' +  '.txt', 'w') as f: 
             json.dump(adv_accs, f)
-        
+  
 
-saver.save(sess, os.path.join(model_dir, 'my_model'), global_step=global_step)
 
-with open('paat_training' +  '.pkl', 'wb') as f: 
-    pickle.dump([nat_accs, adv_accs], f)  
+ 

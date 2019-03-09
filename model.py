@@ -5,6 +5,83 @@ from __future__ import print_function
 
 import numpy as np
 import tensorflow as tf
+from keras.layers import Conv2D, MaxPooling2D, Activation, Flatten, Dense, BatchNormalization
+# from keras.models import Model, Sequential
+from keras import regularizers
+
+import numpy as np
+
+# class Model(object):
+    
+#     def __init__(self, mode):
+        
+#         self.x_input = tf.placeholder(tf.float32, shape=[None, 32, 32, 3])
+
+#         self.y_input = tf.placeholder(tf.int64, shape=None)
+
+    
+#         # # Block 1
+#         x = Conv2D(64, (3, 3), padding='same', name='block1_conv1', 
+#                    kernel_regularizer=regularizers.l2(0.0002))(self.x_input)
+#         x = BatchNormalization()(x)
+#         x = Activation('relu')(x)
+#         x = Conv2D(64, (3, 3), padding='same', name='block1_conv2', 
+#                    kernel_regularizer=regularizers.l2(0.0002))(x)
+#         x = BatchNormalization()(x)
+#         x = Activation('relu')(x)
+#         x = MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool1')(x)
+
+#         # Block 2
+#         x = Conv2D(128, (3, 3), padding='same', name='block2_conv1', 
+#                    kernel_regularizer=regularizers.l2(0.0002))(x)
+#         x = BatchNormalization()(x)
+#         x = Activation('relu')(x)
+#         x = Conv2D(128, (3, 3), padding='same', name='block2_conv2', 
+#                    kernel_regularizer=regularizers.l2(0.0002))(x)
+#         x = BatchNormalization()(x)
+#         x = Activation('relu')(x)
+#         x = MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool1')(x)
+
+#         # Block 3
+#         x = Conv2D(196, (3, 3), padding='same', name='block3_conv1', 
+#                    kernel_regularizer=regularizers.l2(0.0002))(x)
+#         x = BatchNormalization()(x)
+#         x = Activation('relu')(x)
+#         x = Conv2D(196, (3, 3), padding='same', name='block3_conv2', 
+#                    kernel_regularizer=regularizers.l2(0.0002))(x)
+#         x = BatchNormalization()(x)
+#         x = Activation('relu')(x)
+#         x = MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool1')(x)
+
+#         x = Flatten(name='flatten')(x)
+
+#         x = Dense(256, kernel_regularizer=regularizers.l2(0.0002))(x)
+#         x = BatchNormalization()(x)
+#         x = Activation('relu')(x)
+
+#         x = Dense(10, name='logits', kernel_regularizer=regularizers.l2(0.0002))(x)
+
+#         with tf.variable_scope('logit'):
+#             self.pre_softmax = x
+
+#         self.predictions = tf.argmax(self.pre_softmax, 1)
+#         self.correct_prediction = tf.equal(self.predictions, self.y_input)
+#         self.num_correct = tf.reduce_sum(
+#                 tf.cast(self.correct_prediction, tf.int64))
+#         self.accuracy = tf.reduce_mean(
+#                 tf.cast(self.correct_prediction, tf.float32))
+        
+        
+#         with tf.variable_scope('costs'):
+#             self.y_xent = tf.nn.sparse_softmax_cross_entropy_with_logits(
+#                     logits=self.pre_softmax, labels=self.y_input)
+ 
+#             self.xent = tf.reduce_sum(self.y_xent, name='y_xent')
+#             self.mean_xent = tf.reduce_mean(self.y_xent)
+
+
+
+
 
 class Model(object):
     """ResNet model."""
