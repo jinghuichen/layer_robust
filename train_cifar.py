@@ -5,9 +5,11 @@ from model import Model
 import random
 import os
 from cifar_setup import *
-from cifar_setup2 import *
+from cifar10_input import *
 
 data_path = './data_set/cifar_10/'
+if not os.path.exists(data_path):
+  os.makedirs(data_path)
 
 raw_cifar = CIFAR10Data(data_path)
 
