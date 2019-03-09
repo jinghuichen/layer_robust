@@ -74,9 +74,7 @@ def _print_download_progress(count, block_size, total_size):
 def maybe_download_and_extract():
     main_directory = "./data_set/"
     cifar_10_directory = main_directory+"cifar_10/"
-    if not os.path.exists(main_directory):
-        os.makedirs(main_directory)
-
+    if not os.path.exists('./data_set/cifar_10/batches.meta'):
         url = "http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
         filename = url.split('/')[-1]
         file_path = os.path.join(main_directory, filename)

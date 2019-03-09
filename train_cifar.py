@@ -8,13 +8,13 @@ from cifar_setup import *
 from cifar10_input import *
 
 data_path = './data_set/cifar_10/'
-if not os.path.exists(data_path):
-  os.makedirs(data_path)
-
-raw_cifar = CIFAR10Data(data_path)
+#
+# if not os.path.exists('./data_set/cifar_10/batches.meta'):
+#     maybe_download_and_extract()
 
 (x_train, y_train), (x_test, y_test) = get_data_set("train"), get_data_set("test")
 #x_train = tf.reshape(x_train, [-1, 32, 32, 3])
+raw_cifar = CIFAR10Data(data_path)
 n = y_train.shape[0]
 
 model = Model()
