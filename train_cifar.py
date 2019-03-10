@@ -27,8 +27,20 @@ global_step = tf.contrib.framework.get_or_create_global_step()
 
 # lr =  learning_rate = tf.train.exponential_decay(1e-4, 50000,
 #  100, 0.96, staircase=True)
-train_step = tf.train.AdamOptimizer(1e-4).minimize(model.loss)
 
+# train_step = tf.train.AdamOptimizer(1e-4).minimize(model.loss)
+
+# step_size_schedule = [[0, 0.01], [30000, 0.001], [40000, 0.0001]]
+# boundaries = [int(sss[0]) for sss in step_size_schedule]
+# boundaries = boundaries[1:]
+# values = [sss[1] for sss in step_size_schedule]
+# learning_rate = tf.train.piecewise_constant(
+#     tf.cast(global_step, tf.int32),
+#     boundaries,
+#     values)
+# total_loss = model.loss
+# train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(total_loss)
+train_step = tf.train.AdamOptimizer(1e-4).minimize(model.loss)
 
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
