@@ -75,6 +75,8 @@ class CIFAR10Data(object):
           assert data_dict[b'data'].dtype == np.uint8
           image_data = data_dict[b'data']
           image_data = image_data.reshape((10000, 3, 32, 32)).transpose(0, 2, 3, 1)
+           
+          
           return image_data, np.array(data_dict[b'labels'])
 
 class AugmentedCIFAR10Data(object):

@@ -66,7 +66,7 @@ class Model(object):
 
     correct_prediction = tf.equal(self.y_pred, self.y_input)
 
-    self.num_correct = tf.reduce_mean(tf.cast(correct_prediction, tf.int64))
+    self.num_correct = tf.reduce_sum(tf.cast(correct_prediction, tf.int64))
     self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
   @staticmethod
