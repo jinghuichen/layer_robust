@@ -52,9 +52,10 @@ class LinfPGDAttack:
                 shape = conv1.shape
                 noise = np.zeros(shape)
                 noise_nat = noise
-            grad = sess.run(self.grad1, feed_dict={self.model.x_input: x, self.model.y_input: y})
+            grad = sess.run(self.grad1, feed_dict={self.model.x_input: x, self.model.y_input: y, self.model.noise1:noise})
             np.add(noise, self.step_size * np.sign(grad), out=noise, casting='unsafe')
             noise = np.clip(noise, noise_nat - self.epsilon, noise_nat + self.epsilon)
+            print (noise)
 
         return x
     
