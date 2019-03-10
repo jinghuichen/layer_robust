@@ -61,10 +61,12 @@ class Model(object):
 
 #         self.pre_softmax = tf.matmul(h_fc2, W_fc3) + b_fc3
 
-
+        
         self.conv1 = Conv2D(64, (3, 3), padding='same', name='block1_conv1', 
                             kernel_regularizer=regularizers.l2(0.0002))(self.x_image)
-        self.bn1 = BatchNormalization()(self.conv1)
+        self.noise1 = tf.placeholder_with_default(tf.zeros_like(self.conv1), shape=self.conv1.shape)
+        self.conv1n = self.conv1 + self.noise1
+        self.bn1 = BatchNormalization()(self.conv1n)
         self.relu1 = Activation('relu')(self.bn1)
         
         self.conv2 = Conv2D(64, (3, 3), padding='same', name='block1_conv2', 

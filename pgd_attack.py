@@ -26,6 +26,7 @@ class LinfPGDAttack:
         loss = model.loss
 
         self.grad = tf.gradients(loss, model.x_input)[0]
+        self.grad1= tf.gradients(loss, model.noise1)[0]
  
  
     def perturb(self, x_nat, y, sess):
@@ -41,11 +42,19 @@ class LinfPGDAttack:
         
         for i in range(self.num_steps):
             
-            grad = sess.run(self.grad, feed_dict={self.model.x_input: x, self.model.y_input: y})
-            x = np.add(x, self.step_size * np.sign(grad), out=x, casting='unsafe')
+#             grad = sess.run(self.grad, feed_dict={self.model.x_input: x, self.model.y_input: y})
+#             x = np.add(x, self.step_size * np.sign(grad), out=x, casting='unsafe')
+#             x = np.clip(x, x_nat - self.epsilon, x_nat + self.epsilon)
+#             x = np.clip(x, 0, 255) # ensure valid pixel range
 
-            x = np.clip(x, x_nat - self.epsilon, x_nat + self.epsilon)
-            x = np.clip(x, 0, 255) # ensure valid pixel range
+            if i==0:
+                conv1 = sess.run(self.model.conv1, feed_dict={self.model.x_input: x, self.model.y_input: y})
+                shape = conv1.shape
+                noise = np.zeros(shape)
+                noise_nat = noise
+            grad = sess.run(self.grad1, feed_dict={self.model.x_input: x, self.model.y_input: y})
+            np.add(noise, self.step_size * np.sign(grad), out=noise, casting='unsafe')
+            noise = np.clip(noise, noise_nat - self.epsilon, noise_nat + self.epsilon)
 
         return x
     
