@@ -14,53 +14,7 @@ class Model(object):
         self.y_input = tf.placeholder(tf.int64, shape = [None])
 
         self.x_image = tf.reshape(self.x_input, [-1, 32, 32, 3])
-
-#         # first convolutional layer
-#         W_conv1 = self._weight_variable([3,3,3,64])
-#         b_conv1 = self._bias_variable([64])
-
-#         h_conv1 = tf.nn.relu(self._conv2d(self.x_image, W_conv1) + b_conv1)
-
-#         # second convolutional layer
-#         W_conv2 = self._weight_variable([3,3,64,64])
-#         b_conv2 = self._bias_variable([64])
-
-#         h_conv2 = tf.nn.relu(self._conv2d(h_conv1, W_conv2) + b_conv2)
-#         h_pool2 = self._max_pool_2x2(h_conv2)
-
-#         # third convolutional layer
-#         W_conv3 = self._weight_variable([3, 3, 64, 128])
-#         b_conv3 = self._bias_variable([128])
-
-#         h_conv3 = tf.nn.relu(self._conv2d(h_pool2, W_conv3) + b_conv3)
-
-#         # fourth convolutional layer
-#         W_conv4 = self._weight_variable([3, 3, 128, 128])
-#         b_conv4 = self._bias_variable([128])
-
-#         h_conv4 = tf.nn.relu(self._conv2d(h_conv3, W_conv4) + b_conv4)
-#         h_pool4 = self._max_pool_2x2(h_conv4)
-
-
-#         # first fully connected layer
-#         W_fc1 = self._weight_variable([8 * 8 * 128, 256])
-#         b_fc1 = self._bias_variable([256])
-
-#         h_pool4_flat = tf.reshape(h_pool4, [-1, 8 * 8 * 128])
-#         h_fc1 = tf.nn.relu(tf.matmul(h_pool4_flat, W_fc1) + b_fc1)
-
-#         # second fully connected layer
-#         W_fc2 = self._weight_variable([256, 256])
-#         b_fc2 = self._bias_variable([256])
-
-#         h_fc2 = tf.nn.relu(tf.matmul(h_fc1, W_fc2) + b_fc2)
-
-#         # output layer
-#         W_fc3 = self._weight_variable([256,10])
-#         b_fc3 = self._bias_variable([10])
-
-#         self.pre_softmax = tf.matmul(h_fc2, W_fc3) + b_fc3
-
+        self.noise = {}
         
         self.conv1 = Conv2D(64, (3, 3), padding='same', name='block1_conv1', 
                             kernel_regularizer=regularizers.l2(0.0002))(self.x_image)
@@ -68,38 +22,38 @@ class Model(object):
        # self.conv1n = self.conv1 
         self.bn1 = BatchNormalization()(self.conv1)
         self.relu1 = Activation('relu')(self.bn1)
-        self.noise1 = tf.placeholder_with_default(tf.zeros_like(self.relu1), shape=self.relu1.shape)
-        self.relun1 = self.relu1 + self.noise1
+        self.noise["noise1"] = tf.placeholder_with_default(tf.zeros_like(self.relu1), shape=self.relu1.shape)
+        self.relun1 = self.relu1 + self.noise["noise1"]
         
         self.conv2 = Conv2D(64, (3, 3), padding='same', name='block1_conv2', 
                             kernel_regularizer=regularizers.l2(0.0002))(self.relun1)
         self.bn2 = BatchNormalization()(self.conv2)
         self.relu2 = Activation('relu')(self.bn2)
         self.pooling2 = MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool1')(self.relu2)
-        self.noise2 = tf.placeholder_with_default(tf.zeros_like(self.pooling2), shape=self.pooling2.shape)
-        self.poolingn2 = self.pooling2 + self.noise2
+        self.noise["noise2"] = tf.placeholder_with_default(tf.zeros_like(self.pooling2), shape=self.pooling2.shape)
+        self.poolingn2 = self.pooling2 + self.noise["noise2"]
 
         self.conv3 = Conv2D(128, (3, 3), padding='same', name='block2_conv1', 
                    kernel_regularizer=regularizers.l2(0.0002))(self.poolingn2)
         self.bn3 = BatchNormalization()(self.conv3)
         self.relu3 = Activation('relu')(self.bn3)
-        self.noise3 = tf.placeholder_with_default(tf.zeros_like(self.relu3), shape=self.relu3.shape)
-        self.relun3 = self.relu3 + self.noise3
+        self.noise["noise3"] = tf.placeholder_with_default(tf.zeros_like(self.relu3), shape=self.relu3.shape)
+        self.relun3 = self.relu3 + self.noise["noise3"]
         
         self.conv4 = Conv2D(128, (3, 3), padding='same', name='block2_conv2', 
                             kernel_regularizer=regularizers.l2(0.0002))(self.relun3)
         self.bn4 = BatchNormalization()(self.conv4)
         self.relu4 = Activation('relu')(self.bn4)
         self.pooling4 = MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool1')(self.relu4)
-        self.noise4 = tf.placeholder_with_default(tf.zeros_like(self.pooling4), shape=self.pooling4.shape)
-        self.poolingn4 = self.pooling4 + self.noise4
+        self.noise["noise4"] = tf.placeholder_with_default(tf.zeros_like(self.pooling4), shape=self.pooling4.shape)
+        self.poolingn4 = self.pooling4 + self.noise["noise4"]
 
         self.conv5 = Conv2D(196, (3, 3), padding='same', name='block3_conv1', 
                             kernel_regularizer=regularizers.l2(0.0002))(self.poolingn4)
         self.bn5 = BatchNormalization()(self.conv5)
         self.relu5 = Activation('relu')(self.bn5)
-        self.noise5 = tf.placeholder_with_default(tf.zeros_like(self.relu5), shape=self.relu5.shape)
-        self.relun5 = self.relu5 + self.noise5
+        self.noise["noise5"] = tf.placeholder_with_default(tf.zeros_like(self.relu5), shape=self.relu5.shape)
+        self.relun5 = self.relu5 + self.noise["noise5"]
         
         
         self.conv6 = Conv2D(196, (3, 3), padding='same', name='block3_conv2', 
@@ -107,16 +61,16 @@ class Model(object):
         self.bn6 = BatchNormalization()(self.conv6)
         self.relu6 = Activation('relu')(self.bn6)
         self.pooling6 = MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool1')(self.relu6)
-        self.noise6 = tf.placeholder_with_default(tf.zeros_like(self.pooling6), shape=self.pooling6.shape)
-        self.poolingn6 = self.pooling6 + self.noise6        
+        self.noise["noise6"] = tf.placeholder_with_default(tf.zeros_like(self.pooling6), shape=self.pooling6.shape)
+        self.poolingn6 = self.pooling6 + self.noise["noise6"]        
 
         self.flatten = Flatten(name='flatten')(self.poolingn6)
 
         self.dense1 = Dense(256, kernel_regularizer=regularizers.l2(0.0002))(self.flatten)
         self.bn_dense = BatchNormalization()(self.dense1)
         self.relu_dense = Activation('relu')(self.bn_dense)
-        self.noise7 = tf.placeholder_with_default(tf.zeros_like(self.relu_dense), shape=self.relu_dense.shape)
-        self.relu_densen = self.relu_dense + self.noise7
+        self.noise["noise7"] = tf.placeholder_with_default(tf.zeros_like(self.relu_dense), shape=self.relu_dense.shape)
+        self.relu_densen = self.relu_dense + self.noise["noise7"]
         
         self.dense2 = Dense(10, name='logits', kernel_regularizer=regularizers.l2(0.0002))(self.relu_densen)
 
