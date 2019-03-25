@@ -10,11 +10,16 @@ from keras import regularizers
 
 class Model(object):
     def __init__(self):
+        self.noise = {}
         self.x_input = tf.placeholder(tf.float32, shape=[None, 3072])
+        self.noise["noise0"] = tf.placeholder_with_default(tf.zeros_like(self.x_input), shape=self.x_input.shape)
+        self.x_inputn = self.x_input + self.noise["noise0"]
+        
+        
         self.y_input = tf.placeholder(tf.int64, shape = [None])
 
-        self.x_image = tf.reshape(self.x_input, [-1, 32, 32, 3])
-        self.noise = {}
+        self.x_image = tf.reshape(self.x_inputn, [-1, 32, 32, 3])
+        
         
         self.conv1 = Conv2D(64, (3, 3), padding='same', name='block1_conv1', 
                             kernel_regularizer=regularizers.l2(0.0002))(self.x_image)
